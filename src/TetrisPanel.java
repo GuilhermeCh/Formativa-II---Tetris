@@ -8,7 +8,7 @@ public class TetrisPanel extends JFrame {
     	setTitle("Tetris");
         setSize(450, 640);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setResizable(false);
+        //setResizable(false);
         setLocationRelativeTo(null);
 
         area = new Board();

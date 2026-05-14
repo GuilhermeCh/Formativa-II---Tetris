@@ -1,22 +1,43 @@
 import java.awt.Color;
-import java.awt.Graphics;
 
 public class Tetromino {
-	private int[][] bloco = { {1, 0}, {1, 0}, {1, 1} };
-
-	public void geraBloco(Graphics g, int gradeArea, int moveLinha, int moveColuna) {
-		for(int linha = 0; linha < bloco.length; linha++) {
-			for(int coluna = 0; coluna < bloco[0].length; coluna++){
-				if(bloco[linha][coluna] == 1) {
-					// Desenha o desenho
-					g.setColor(Color.red);
-					g.fillRect(coluna * gradeArea + moveColuna * gradeArea, linha * gradeArea + moveLinha * gradeArea, gradeArea, gradeArea);
-					// Desenha as linhas do bloco
-					g.setColor(Color.white);
-					g.drawRect(coluna * gradeArea + moveColuna * gradeArea, linha * gradeArea + moveLinha * gradeArea, gradeArea, gradeArea);
-				}
-			}
-		}
+	
+	private int [][] bloco;
+	private Color cor;
+	private int x, y;
+	
+	// Construtor
+	public Tetromino(int[][] bloco, Color cor) {
+		this.bloco = bloco;
+		this.cor = cor;
 	}
+	
+	/**
+	 * Coloca o bloco no meio da grade.
+	 * @param gradeColuna Recebe o tamanho da largura da grade
+	 */
+	public void spawn(int gradeColuna) {
+		// Colocamos no negativo para começar emcima da grade
+		y = 0 - getHeight();
+		// Calcula a posição X da grade. Para calcular o meio da grid colocamos a largura da grid menos o a largura do bloco e dividimos por 2
+		x = (gradeColuna - getWidth()) / 2;
+	}
+	
+	public int[][] getBloco(){ return bloco; }
 
+	public Color getCor(){ return cor; }
+
+	public int getHeight(){ return bloco.length; }
+
+	public int getWidth(){ return bloco[0].length; }
+	
+	public int getX(){ return x; }
+	
+	public int getY(){ return y; }
+	
+	public void descerBloco(){ y++; }
+	
+	public void moveEsquerda(){ x--; }
+	
+	public void moveDireita(){ x++ ;}
 }

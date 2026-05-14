@@ -1,38 +1,78 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.ActionEvent;
 
-public class Board extends JPanel implements KeyListener {
+
+public class Board extends JPanel {
 	
-	private Timer looper; 
-	private Tetromino bloco = new Tetromino();
 	private int gradeColuna = 10;
 	private int gradeLinha = 20;
 	private int gradeArea = 30;
 	
-	int moveLinha = 0, moveColuna = 0;
+	private Timer looper; 
 	
-	public Board(){
-		setFocusable(true);
-        addKeyListener(this);
+	private Tetromino bloco;
+	
+	public Board() {
+		criaBloco();
 		
-		looper = new Timer(500, new ActionListener() {
+		looper = new Timer(200, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	moveLinha++;
-                repaint();
+            	if(verificaFundo() == true) return;
+            	
+        		bloco.descerBloco();
+        		repaint();
             }
         });
         looper.start();
 	}
 	
+	public void criaBloco() {
+		bloco = new Tetromino(new int[][] { {1, 0}, {1, 0}, {1, 1} }, Color.red);
+		bloco.spawn(gradeColuna);
+	}
+	
+	/**
+	 * Gera blocos para o painel
+	 * @param g Valor que gera o bloco
+	 */
+	private void geraBloco(Graphics g) {
+		for(int linha = 0; linha < bloco.getHeight(); linha++) {
+			for(int coluna = 0; coluna < bloco.getWidth(); coluna++){
+				if(bloco.getBloco()[linha][coluna] == 1) {
+					
+					int x = (bloco.getX() + coluna) * gradeArea;
+					int y = (bloco.getY() + linha) * gradeArea;
+					
+					// Desenha o bloco
+					g.setColor(bloco.getCor());
+					g.fillRect(x, y, gradeArea, gradeArea);
+					// Desenha as linhas do bloco
+					g.setColor(Color.white);	
+					g.drawRect(x, y, gradeArea, gradeArea);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Verifica caso o bloco chegou no fundo da grade
+	 * @return True
+	 */
+	private boolean verificaFundo() {
+		// Calcula a altura do bloco mais a altura da grade restante e verifica se é do mesmo tamanho da grade total
+		if(bloco.getY() + bloco.getHeight() == gradeLinha ) {
+			return true;
+		}
+		return false;
+	}
+	
 	@Override
 	protected void paintComponent(Graphics g) {
-		//Adciona a cor no fundo da area do jogo
 		super.paintComponent(g) ;
+		// Adciona a cor no fundo da area do jogo
         g.setColor(Color.black);
         g.fillRect(0, 0, getWidth(), getHeight());
 
@@ -45,25 +85,6 @@ public class Board extends JPanel implements KeyListener {
 			g.drawLine(coluna * gradeArea, 0, coluna * gradeArea, gradeArea * gradeLinha);
 		}
 		
-		bloco.geraBloco(g, gradeArea, moveLinha, moveColuna);
-		
+		geraBloco(g);
 	}
-	
-	@Override
-    public void keyPressed(KeyEvent e) {
-        if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            moveColuna++;
-        } 
-        else if(e.getKeyCode() == KeyEvent.VK_LEFT) {
-            moveColuna--;
-        }
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {}
-
-    @Override
-    public void keyTyped(KeyEvent e) {}
-	
-	
 }
