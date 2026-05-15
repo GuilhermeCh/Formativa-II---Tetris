@@ -13,10 +13,10 @@ public class Tetromino {
 		this.bloco = bloco;
 		this.cor = cor;
 		
-		initShape();
+		rotacionar();
 	}
 	
-	private void initShape() {
+	private void rotacionar() {
 		blocos = new int[2][][];
 		
 		blocos[0] = bloco;
@@ -62,7 +62,7 @@ public class Tetromino {
 	
 	public void moveDireita() { x++ ;}
 	
-	public void rotacionar() {
+	public void rotacionarBloco() {
 		rotacaoAtual++;
 		if(rotacaoAtual > 1) rotacaoAtual = 0;
 		bloco = blocos[rotacaoAtual];

@@ -10,7 +10,7 @@ public class Board extends JPanel {
 	private int gradeArea = 30;
 	
 	private Timer looper; 
-	private int velocidadeRapida = 20;
+	private int velocidadeRapida = 16;
 	private int velocidadeNormal = 200;
 	private int delayVelocidade = velocidadeNormal;
 	
@@ -27,6 +27,7 @@ public class Board extends JPanel {
             	// Verifica se o bloco chegou no frundo e gera um novo bloco
             	if(verificaFundo() == true) {
             		converteBlocoParaFundo();
+            		removerLinhasCompletas();
             		criaBloco();
             	} else {
             		bloco.descerBloco();
@@ -82,6 +83,37 @@ public class Board extends JPanel {
 			}
 		}
 	}
+	
+	public void removerLinhasCompletas() {
+		boolean linhaCompleta;
+		for(int linha = gradeLinha-1; linha >= 0; linha--) {
+			linhaCompleta = true;
+			for(int coluna = 0; coluna < gradeColuna; coluna++) {
+				if(fundoBlocos[linha][coluna] == null) {
+					linhaCompleta = false;
+					break;
+				}
+			}
+			if(linhaCompleta == true) {
+				for(int c = 0; c < gradeColuna; c++) {
+					fundoBlocos[linha][c] = null;
+				}
+				descerLinha(linha);
+				linha++;
+				
+				repaint();
+			}
+		}
+	}
+	
+	public void descerLinha(int l) {
+		for(int linha = l; linha > 0; linha--) {
+			for(int coluna = 0; coluna < gradeColuna; coluna++) {
+				fundoBlocos[linha][coluna] = fundoBlocos[linha - 1][coluna];
+			}
+		}
+	}
+	
 	/**
 	 * Cpnverte um bloco para fundo, assim é possivel gerar um novo bloco sem que apague o bloco que chega no fundo
 	 */
@@ -116,8 +148,8 @@ public class Board extends JPanel {
 		repaint();
 	}
 	
-	public void rotacionarBloco() {
-		bloco.rotacionar();
+	public void rotacionar() {
+		bloco.rotacionarBloco();
 		repaint();
 	}
 	

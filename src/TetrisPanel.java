@@ -36,7 +36,7 @@ public class TetrisPanel extends JFrame implements KeyListener{
 		} else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
 			area.retornaVelocidadeRapida();
 		} else if (e.getKeyCode() == KeyEvent.VK_UP) {
-			area.rotacionarBloco();
+			area.rotacionar();
 		} 
 	}
     
