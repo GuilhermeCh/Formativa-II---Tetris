@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.util.Random;
 
 public class Board extends JPanel {
 	
@@ -16,6 +17,8 @@ public class Board extends JPanel {
 	
 	private Tetromino bloco;
 	private Color[][] fundoBlocos;
+	
+	private Random random = new Random();
 		
 	public Board() {
 		criaBloco();
@@ -39,7 +42,7 @@ public class Board extends JPanel {
 	}
 	
 	public void criaBloco() {
-		bloco = new Tetromino(new int[][] { {1, 0}, {1, 0}, {1, 1} }, Color.red);
+		bloco = new Tetromino(random.nextInt(7));
 		bloco.spawn(gradeColuna);
 	}
 	
@@ -55,7 +58,7 @@ public class Board extends JPanel {
 					int x = (bloco.getX() + coluna) * gradeArea;
 					int y = (bloco.getY() + linha) * gradeArea;
 					
-					desenhaBlocoGrade(g, Color.red, x, y);
+					desenhaBlocoGrade(g, bloco.getCor(), x, y);
 				}
 			}
 		}
@@ -149,7 +152,7 @@ public class Board extends JPanel {
 	}
 	
 	public void rotacionar() {
-		bloco.rotacionarBloco();
+		bloco.rotacionarBloco(gradeColuna);
 		repaint();
 	}
 	
@@ -191,6 +194,7 @@ public class Board extends JPanel {
 				if(forma[linha][coluna] != 0) {
 					int x = coluna + bloco.getX();
 					int y = linha + bloco.getY() + 1;
+					if(y < 0) break;
 					if(fundoBlocos[y][x] != null) return true;
 					break;
 				}
@@ -202,7 +206,6 @@ public class Board extends JPanel {
 	private boolean verificaBordaEsquerda() {
 		if(bloco.getBordaEsquerda() == 0) return true;
 
-			
 		int[][]forma = bloco.getBloco();
 		int comprimento = bloco.getWidth();
 		int altura = bloco.getHeight();
