@@ -12,14 +12,106 @@ public class Tetromino {
 	private int [][][] blocos;
 	
 	// Construtor
-	public Tetromino(int numero) {
-		fabricaBloco(numero);
+	public Tetromino(int bloco[][], Color cor) {
+		this.bloco = bloco;
+		this.cor = cor;
+		
 		rotacionar();
 	}
 	
+	/**
+	 * Fabrica o bloco I
+	 * @return Retorna o bloco I
+	 */
+    public static Tetromino blocoI() {
+        return new Tetromino( new int[][]
+        	{
+                {1},
+                {1},
+                {1},
+                {1}
+            }, Color.cyan);
+    }
+    
+    /**
+	 * Fabrica o bloco O
+	 * @return Retorna o bloco O
+	 */
+    public static Tetromino blocoO() {
+        return new Tetromino( new int[][]
+        	{
+				{1, 1},
+				{1, 1}
+        	}, Color.yellow);
+    }
+    
+    /**
+	 * Fabrica o bloco T
+	 * @return Retorna o bloco T
+	 */
+    public static Tetromino blocoT() {
+        return new Tetromino( new int[][]
+        	{
+	        	{1, 1, 1},
+				{0, 1, 0}
+        	}, Color.magenta);
+    }
+    
+    /**
+	 * Fabrica o bloco L
+	 * @return Retorna o bloco L
+	 */
+    public static Tetromino blocoL() {
+        return new Tetromino( new int[][]
+        	{
+	        	{1, 0}, 
+				{1, 0}, 
+				{1, 1} 
+        	}, Color.pink);
+    }
+    
+    /**
+	 * Fabrica o bloco J
+	 * @return Retorna o bloco J
+	 */
+    public static Tetromino blocoJ() {
+        return new Tetromino( new int[][]
+        	{
+	        	{0, 1}, 
+				{0, 1}, 
+				{1, 1} 
+        	}, Color.blue);
+    }
+    
+    /**
+	 * Fabrica o bloco S
+	 * @return Retorna o bloco S
+	 */
+    public static Tetromino blocoS() {
+        return new Tetromino( new int[][]
+        	{
+	        	{0, 1, 1}, 
+				{1, 1, 0}
+        	}, Color.green);
+    }
+    
+    /**
+	 * Fabrica o bloco Z
+	 * @return Retorna o bloco Z
+	 */
+    public static Tetromino blocoZ() {
+        return new Tetromino( new int[][]
+        	{
+	        	{1, 1, 0}, 
+				{0, 1, 1}
+        	}, Color.red);
+    }
+	
+	/**
+	 * Faz a rotação do bloco, retornando um novo bloco quando rotacionado
+	 */
 	private void rotacionar() {
 		blocos = new int[4][][];
-		
 		
 		for(int i = 0; i < 4; i++) {
 			int linhas = bloco.length;
@@ -35,105 +127,94 @@ public class Tetromino {
 		}
 	}
 	
-	public void rotacionarBloco() {
+	/**
+	 * Gera qual a posição da rotação do bloco e verifica se o bloco irá ultrapassar a grade
+	 * @param Tamanho das colunas da grade
+	 */
+	public void rotacionarBloco(int gradeColuna) {
 		rotacaoAtual++;
 		if(rotacaoAtual > 3) rotacaoAtual = 0;
 		bloco = blocos[rotacaoAtual];
+		
+		// Move o bloco caso o bloco ultrapasse a grade direita
+	    while(getBordaDireita() > gradeColuna) {
+	        x--;
+	    }
 	}
 	
 	/**
-	 * Coloca o bloco no meio da grade.
-	 * @param gradeColuna Recebe o tamanho da largura da grade
+	 * Gera o bloco no meio da grade.
+	 * @param gradeColuna Tamanho da largura da grade
 	 */
 	public void spawn(int gradeColuna) {
 		rotacaoAtual = 3;
 		bloco = blocos[rotacaoAtual];
 		
-		// Colocamos no negativo para começar em cima da grade
 		y = 0 - getHeight();
-		// Calcula a posição X da grade. Para calcular o meio da grid colocamos a largura da grid menos o a largura do bloco e dividimos por 2
 		x = (gradeColuna - getWidth()) / 2;
 	}
-	
-	
-	public void fabricaBloco(int numero) {
-		
-		int[][][] blocoSelecionado = {
 
-				{ // Bloco I
-					{1},
-					{1},
-					{1},
-					{1}
-				},
-				
-				{ // Bloco O
-					{1, 1},
-					{1, 1}
-				},
-				
-				{ // Bloco T
-					{1, 1, 1},
-					{0, 1, 0}
-				},
-				
-				{ // Bloco L
-					{1, 0}, 
-					{1, 0}, 
-					{1, 1} 
-				},
-				
-				{ // Bloco J
-					{0, 1}, 
-					{0, 1}, 
-					{1, 1} 
-				},
-				
-				{ // Bloco S
-					{0, 1, 1}, 
-					{1, 1, 0}, 
-				},
-				
-				{ // Bloco Z
-					{1, 1, 0}, 
-					{0, 1, 1}, 
-				}
-		};
-		
-		Color[] cores = {
-			Color.cyan,     // Cor Bloco I
-			Color.yellow,   // Cor Bloco O
-			Color.magenta,  // Cor Bloco T
-			Color.orange,   // Cor Bloco L
-			Color.blue,     // Cor Bloco J
-			Color.green,    // Cor Bloco S
-			Color.red       // Cor Bloco Z
-		};
-		
-		 this.bloco = blocoSelecionado[numero];
-		 this.cor = cores[numero];
-	}
-	
+	/**
+	 * Retorna o bloco atual
+	 * @return Bloco atual
+	 */
 	public int[][] getBloco() { return bloco; }
 
+	/**
+	 * Retorna a cor do bloco atual
+	 * @return Cor do bloco atual
+	 */
 	public Color getCor() { return cor; }
 
+	/**
+	 * Retorna a altura do bloco atual
+	 * @return Altura do bloco atual
+	 */
 	public int getHeight() { return bloco.length; }
 
+	/**
+	 * Retorna a largura do bloco atual
+	 * @return Largura do bloco atual
+	 */
 	public int getWidth() { return bloco[0].length; }
 	
+	/**
+	 * Retorna a posição X do bloco atual
+	 * @return Posição X do bloco atual
+	 */
 	public int getX() { return x; }
 	
+	/**
+	 * Retorna a posição Y do bloco atual
+	 * @return Posição Y do bloco atual
+	 */
 	public int getY() { return y; }
 	
+	/**
+	 * Desce o bloco na grade
+	 */
 	public void descerBloco() { y++; }
 	
+	/**
+	 * Move o bloco para a esquerda na grade
+	 */
 	public void moveEsquerda() { x--; }
 	
+	/**
+	 * Move o bloco para a esquerda na grade
+	 */
 	public void moveDireita() { x++ ;}
 	
+	/**
+	 * Retorna a borda esquerda da grade
+	 * @return Returna o X da grade
+	 */
 	public int getBordaEsquerda() { return x; }
 	
+	/**
+	 * Retorna a borda direita da grade
+	 * @return Returna o X + largura da grade
+	 */
 	public int getBordaDireita() { return x + getWidth(); }
 	
 }
