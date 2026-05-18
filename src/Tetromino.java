@@ -4,7 +4,10 @@ public class Tetromino {
 	
 	private int [][] bloco;
 	private Color cor;
-	private int x, y;
+	
+	private int x;
+	private int y;
+	
 	private int rotacaoAtual;
 	private int [][][] blocos;
 	
@@ -15,31 +18,27 @@ public class Tetromino {
 	}
 	
 	private void rotacionar() {
-		blocos = new int[2][][];
+		blocos = new int[4][][];
 		
-		blocos[0] = bloco;
 		
-		int linhas = bloco.length;
-	    int colunas = bloco[0].length;
-	    int[][] blocoRotacionado = new int[colunas][linhas];
-
-	    for (int y = 0; y < linhas; y++) {
-	        for (int x = 0; x < colunas; x++) {
-	        	blocoRotacionado[x][linhas - 1 - y] = bloco[y][x];
-	        }
-	    }
-	    blocos[1] = blocoRotacionado;
+		for(int i = 0; i < 4; i++) {
+			int linhas = bloco.length;
+		    int colunas = bloco[0].length;
+		    blocos[i] = new int[colunas][linhas];
+		    
+		    for(int y = 0; y < colunas; y++) {
+		        for (int x = 0; x < linhas; x++) {
+		        	blocos[i][y][x] = bloco[linhas - 1 - x][y];
+		        }
+		    }
+			bloco = blocos[i];
+		}
 	}
 	
-	public void rotacionarBloco(int gradeColuna) {
+	public void rotacionarBloco() {
 		rotacaoAtual++;
-		if(rotacaoAtual > 1) rotacaoAtual = 0;
+		if(rotacaoAtual > 3) rotacaoAtual = 0;
 		bloco = blocos[rotacaoAtual];
-		
-		// Move o bloco caso o bloco ultrapasse a grade direita
-	    while(getBordaDireita() > gradeColuna) {
-	        x--;
-	    }
 	}
 	
 	/**
@@ -47,13 +46,17 @@ public class Tetromino {
 	 * @param gradeColuna Recebe o tamanho da largura da grade
 	 */
 	public void spawn(int gradeColuna) {
+		rotacaoAtual = 3;
+		bloco = blocos[rotacaoAtual];
+		
 		// Colocamos no negativo para começar em cima da grade
 		y = 0 - getHeight();
 		// Calcula a posição X da grade. Para calcular o meio da grid colocamos a largura da grid menos o a largura do bloco e dividimos por 2
 		x = (gradeColuna - getWidth()) / 2;
 	}
 	
-public void fabricaBloco(int numero) {
+	
+	public void fabricaBloco(int numero) {
 		
 		int[][][] blocoSelecionado = {
 

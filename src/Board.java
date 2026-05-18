@@ -28,7 +28,7 @@ public class Board extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
             	// Verifica se o bloco chegou no frundo e gera um novo bloco
-            	if(verificaFundo() == true) {
+            	if(verificaColisaoFundo() == true) {
             		converteBlocoParaFundo();
             		removerLinhasCompletas();
             		criaBloco();
@@ -46,27 +46,40 @@ public class Board extends JPanel {
 		bloco.spawn(gradeColuna);
 	}
 	
+	private void desenhaBlocoGrade(Graphics g, Color color, int x, int y) {
+		// Desenha o bloco
+		g.setColor(color);
+		g.fillRect(x, y, gradeArea, gradeArea);
+		// Desenha as linhas do bloco
+		g.setColor(Color.white);	
+		g.drawRect(x, y, gradeArea, gradeArea);
+	}
+	
 	/**
-	 * Gera blocos para o painel
-	 * @param g Valor que gera o bloco
+	 * Cpnverte um bloco para fundo, assim é possivel gerar um novo bloco sem que apague o bloco que chega no fundo
 	 */
-	private void geraBloco(Graphics g) {
-		for(int linha = 0; linha < bloco.getHeight(); linha++) {
-			for(int coluna = 0; coluna < bloco.getWidth(); coluna++){
-				if(bloco.getBloco()[linha][coluna] == 1) {
-					
-					int x = (bloco.getX() + coluna) * gradeArea;
-					int y = (bloco.getY() + linha) * gradeArea;
-					
-					desenhaBlocoGrade(g, bloco.getCor(), x, y);
+	private void converteBlocoParaFundo() {
+		int[][] forma = bloco.getBloco();
+		int altura = bloco.getHeight();
+		int largura = bloco.getWidth();
+		
+		int posicaoX = bloco.getX();
+		int posicaoY = bloco.getY();
+		
+		Color cor = bloco.getCor();
+		
+		for(int l = 0; l < altura; l++) {
+			for(int c = 0; c < largura; c++) {
+				if(forma[l][c] == 1) {
+					fundoBlocos[l + posicaoY][c + posicaoX] = cor;
 				}
 			}
 		}
 	}
-	
+
 	/**
 	 * Gera o fundo quando um bloco chega ao final da grade
-	 * @param g Valor que gera o bloco
+	 * @param g Bloco atual
 	 */
 	private void geraFundoBlocos(Graphics g) {
 		Color color;
@@ -117,42 +130,20 @@ public class Board extends JPanel {
 		}
 	}
 	
-	/**
-	 * Cpnverte um bloco para fundo, assim é possivel gerar um novo bloco sem que apague o bloco que chega no fundo
-	 */
-	private void converteBlocoParaFundo() {
-		int[][] forma = bloco.getBloco();
-		int altura = bloco.getHeight();
-		int largura = bloco.getWidth();
-		
-		int posicaoX = bloco.getX();
-		int posicaoY = bloco.getY();
-		
-		Color cor = bloco.getCor();
-		
-		for(int l = 0; l < altura; l++) {
-			for(int c = 0; c < largura; c++) {
-				if(forma[l][c] == 1) {
-					fundoBlocos[l + posicaoY][c + posicaoX] = cor;
-				}
-			}
-		}
-	}
-	
 	public void moveBlocoDireita() {
-		if(verificaBordaDireita() == true) return;
+		if(verificaColisapBordaDireita() == true) return;
 		bloco.moveDireita();
 		repaint();
 	}
 	
 	public void moveBlocoEsquerda() {
-		if(verificaBordaEsquerda() == true) return;
+		if(verificaColisaoBordaEsquerda() == true) return;
 		bloco.moveEsquerda();
 		repaint();
 	}
 	
 	public void rotacionar() {
-		bloco.rotacionarBloco(gradeColuna);
+		bloco.rotacionarBloco();
 		repaint();
 	}
 	
@@ -166,20 +157,11 @@ public class Board extends JPanel {
 		looper.setDelay(delayVelocidade);
 	}
 	
-	private void desenhaBlocoGrade(Graphics g, Color color, int x, int y) {
-		// Desenha o bloco
-		g.setColor(color);
-		g.fillRect(x, y, gradeArea, gradeArea);
-		// Desenha as linhas do bloco
-		g.setColor(Color.white);	
-		g.drawRect(x, y, gradeArea, gradeArea);
-	}
-	
 	/**
 	 * Verifica caso o bloco chegou no fundo da grade
 	 * @return True
 	 */
-	private boolean verificaFundo() {
+	private boolean verificaColisaoFundo() {
 		// Calcula a altura do bloco mais a altura da grade restante e verifica se é do mesmo tamanho da grade total
 		if(bloco.getY() + bloco.getHeight() == gradeLinha ) {
 			return true;
@@ -203,7 +185,7 @@ public class Board extends JPanel {
 		return false;
 	}
 	
-	private boolean verificaBordaEsquerda() {
+	private boolean verificaColisaoBordaEsquerda() {
 		if(bloco.getBordaEsquerda() == 0) return true;
 
 		int[][]forma = bloco.getBloco();
@@ -224,7 +206,7 @@ public class Board extends JPanel {
 		return false;
 	}
 	
-	private boolean verificaBordaDireita() {
+	private boolean verificaColisapBordaDireita() {
 		if(bloco.getBordaDireita() == gradeColuna) return true;
 			
 		int[][]forma = bloco.getBloco();
@@ -261,7 +243,19 @@ public class Board extends JPanel {
 			g.drawLine(coluna * gradeArea, 0, coluna * gradeArea, gradeArea * gradeLinha);
 		}
 		
-		geraBloco(g);
+		// Gera blocos para o painel
+		for(int linha = 0; linha < bloco.getHeight(); linha++) {
+			for(int coluna = 0; coluna < bloco.getWidth(); coluna++){
+				if(bloco.getBloco()[linha][coluna] == 1) {
+					
+					int x = (bloco.getX() + coluna) * gradeArea;
+					int y = (bloco.getY() + linha) * gradeArea;
+					
+					desenhaBlocoGrade(g, bloco.getCor(), x, y);
+				}
+			}
+		}
+		
 		geraFundoBlocos(g);
 	}
 }
