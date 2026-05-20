@@ -67,7 +67,7 @@ public class Tetromino {
 	        	{1, 0}, 
 				{1, 0}, 
 				{1, 1} 
-        	}, Color.pink);
+        	}, Color.orange);
     }
     
     /**
@@ -136,9 +136,14 @@ public class Tetromino {
 		if(rotacaoAtual > 3) rotacaoAtual = 0;
 		bloco = blocos[rotacaoAtual];
 		
-		// Move o bloco caso o bloco ultrapasse a grade direita
-	    while(getBordaDireita() > gradeColuna) {
-	        x--;
+		// Corrige ultrapassagem da borda direita
+		while (getBordaDireita() > gradeColuna) {
+			x--;
+		}
+
+	    // Corrige ultrapassagem da borda esquerda
+	    while (getBordaEsquerda() < 0) {
+	    	x++;
 	    }
 	}
 	
@@ -150,7 +155,7 @@ public class Tetromino {
 		rotacaoAtual = 3;
 		bloco = blocos[rotacaoAtual];
 		
-		y = 0 - getHeight();
+		y = -1;
 		x = (gradeColuna - getWidth()) / 2;
 	}
 

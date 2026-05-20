@@ -4,9 +4,8 @@ import java.awt.event.KeyListener;
 import javax.swing.JFrame;
 
 public class TetrisPanel extends JFrame implements KeyListener{
-
 	private Board area;
-	
+
     public TetrisPanel() {
     	setTitle("Tetris");
         setSize(450, 640);
