@@ -144,8 +144,10 @@ public class Board extends JPanel {
 	/**
 	 * Remove uma linha de bloco quando estiver completa
 	 */
-	public void removerLinhasCompletas() {
+	public int removerLinhasCompletas() {
+	    int linhasRemovidas = 0;
 		boolean linhaCompleta;
+		
 		for(int linha = gradeLinha - 1; linha >= 0; linha--) {
 			linhaCompleta = true;
 			for(int coluna = 0; coluna < gradeColuna; coluna++) {
@@ -161,8 +163,11 @@ public class Board extends JPanel {
 				descerLinha(linha);
 				linha++;
 				repaint();
+				
+	            linhasRemovidas++;
 			}
 		}
+	    return linhasRemovidas;
 	}
 	
 	/**

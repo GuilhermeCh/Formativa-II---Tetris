@@ -20,6 +20,7 @@ public class TetrisPanel extends JFrame implements KeyListener{
         setFocusable(true);
         
         setVisible(true);
+        requestFocusInWindow();
     }
 
     public static void main(String args[]) {
